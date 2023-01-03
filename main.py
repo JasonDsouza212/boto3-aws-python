@@ -1,26 +1,16 @@
 import  boto3
-ec2_client=boto3.client('ec2',region_name="eu-central-1")
+ec2_client=boto3.client('ec2' )
 ec2_resource= boto3.resource('ec2')
 
-new_vpc= ec2_resource.create_vpc(
-    CidrBlock="10.0.0.0/16"
-)
-new_vpc.create_subnet(
-    CidrBlock="10.0.1.0/24"
-)
-new_vpc.create_tags(
-     Tags=[
-         {
-             'Key':'name',
-             'Value':'my-vpc'
-         },
-     ]
-)
-all_available_vpcs = ec2_client.describe_vpcs()
-vpcs=all_available_vpcs['Vpcs']
+reservations=ec2_client.describe_instances()
+for reservation in reservations['Reservations']:
+    instances=reservation['instances']
+    for instance in instances:
+       print(f"Instance {instance['instanceId']} is {instance['State']['Name']} ")
 
-for vpc in vpcs:
-    print(vpc["VpcId"])
-    cidr_block_assoc_sets= vpc["CidrBlockAssociationSet"]
-    for assoc_set in cidr_block_assoc_sets:
-        print(assoc_set["CidrBlockState"])
+statuses=ec2_client.describe_instance_status()
+for status in statuses["InstanceStatuses"]:
+    ins_status = status['instanceStatus']['Status']
+    sys_status= status['SystemStatus']['Status']
+    state=status['InstanceState'] #can get the above for loop easily in this line  
+    print(f"Instance {status['InstanceId']} status is {ins_status} and system status is {sys_status}")
