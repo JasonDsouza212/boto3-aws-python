@@ -22,6 +22,5 @@ def check_instance_status():
     print("###########################")
 
 schedule.every(5).minutes.do(check_instance_status())
-schedule
 while True:
     schedule.run_pending()

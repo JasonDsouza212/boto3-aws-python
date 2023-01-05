@@ -22,7 +22,7 @@ for volume in volumes['Volumes']:
     )
 
     sorted_by_date = sorted(snapshots['Snapshots'], key=itemgetter('StartTime'), reverse=True)
-
+    print(sorted_by_date)
     for snap in sorted_by_date[1:]:
         response = ec2_client.delete_snapshot(
             SnapshotId=snap['SnapshotId']
